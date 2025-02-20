@@ -5,14 +5,14 @@ pipeline {
         maven 'Maven'
     }
 
+    environment {
+        SONAR_HOST_URL = "http://192.168.207.3:9001"
+    }
+
     stages {
         stage('Git Checkout') {
             steps {
-                checkout scmGit(
-                    branches: [[name: '*/main']], 
-                    extensions: [], 
-                    userRemoteConfigs: [[url: 'https://github.com/David7777-ops/DockerJenkins']]
-                )
+                git branch: 'main', url: 'https://github.com/David7777-ops/DockerJenkins'
                 echo 'Git Checkout Completed'
             }
         }
@@ -24,8 +24,7 @@ pipeline {
                     mvn clean verify sonar:sonar 
                     -Dsonar.projectKey=ProjectNameSonar 
                     -Dsonar.projectName=sonarDavid777 
-                    -Dsonar.host.url=http://192.168.207.3:9001 
-                    -Dsonar.login=$SONARQUBE_TOKEN
+                    -Dsonar.host.url=%SONAR_HOST_URL%
                     '''
                     echo 'SonarQube Analysis Completed'
                 }
@@ -33,3 +32,4 @@ pipeline {
         }
     }
 }
+
